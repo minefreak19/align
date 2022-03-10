@@ -8,15 +8,13 @@ void usage(std::ostream& stream, const char *program_invocation_name = "align") 
     // TODO(#1): `-r` option, to align from last occurrence
     //  This should be as simple as using rfind instead of find
 
-    // TODO(#2): `--add-space` option
-    //  This would add an extra space character before the delimiter
-    //  on the longest line before the delimiter, if that line does not
-    //  already have a space before the delimiter
-
     stream << "USAGE: " << program_invocation_name
            << " <delimiter>"
            << " [option...]"
-           << '\n';
+           << '\n'
+
+           << "OPTIONS:\n"
+           << '\t' << "--add-space            Add an extra space character before the delimiter if not already present" << '\n';
 }
 
 int main(int argc, const char **argv) {
@@ -30,13 +28,26 @@ int main(int argc, const char **argv) {
         exit(1);
     }
 
+    // if the C++ gods would be so kind as to zero-initialise this for us :)
+    static struct {
+        bool add_space;
+        bool _invalid;
+    } args;
+
     for (int i = 2; i < argc; i++) {
-        cerr << "ERROR: Unknown argument "
-             << '`' << argv[i] << '`'
-             << '\n';
+        string arg = string(argv[i]);
+
+        if (arg == "--add-space") {
+            args.add_space = true;
+        } else {
+            cerr << "ERROR: Unknown argument "
+                 << '`' << arg << '`'
+                 << '\n';
+            args._invalid = true;
+        }
     }
 
-    if (argc > 2) {
+    if (args._invalid) {
         usage(cerr, argv[0]);
         exit(1);
     }
@@ -56,7 +67,13 @@ int main(int argc, const char **argv) {
 
     int64_t max_idx = 0;
     for (string line : lines) {
-        max_idx = max(max_idx, (int64_t) line.find(delim));
+        int64_t idx = line.find(delim);
+        if (idx >= max_idx) {
+            max_idx = idx;
+            if (args.add_space && !isspace(line[max_idx - 1])) {
+                max_idx += 1;
+            }
+        }
     }
 
     for (string line : lines) {
