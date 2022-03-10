@@ -1,0 +1,9 @@
+# VSCode stuff
+.vscode/
+
+# Binaries
+bin
+
+# Testing stuff
+*.sh
+*.txt
