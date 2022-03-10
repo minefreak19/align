@@ -8,7 +8,7 @@ void usage(std::ostream& stream, const char *program_invocation_name = "align") 
     // TODO(#1): `-r` option, to align from last occurrence
     //  This should be as simple as using rfind instead of find
 
-    // TODO: `--add-space` option
+    // TODO(#2): `--add-space` option
     //  This would add an extra space character before the delimiter
     //  on the longest line before the delimiter, if that line does not
     //  already have a space before the delimiter
