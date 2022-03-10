@@ -20,9 +20,6 @@ void usage(std::ostream& stream, const char *program_invocation_name = "align") 
 }
 
 int main(int argc, const char **argv) {
-    (void) argc;
-    (void) argv;
-
     assert(argc > 0);
 
     using namespace std;
