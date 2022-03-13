@@ -14,7 +14,7 @@ void usage(std::ostream& stream, const char *program_invocation_name = "align") 
            << '\n'
 
            << "OPTIONS:\n"
-           << '\t' << "--add-space            Add an extra space character before the delimiter if not already present" << '\n';
+           << '\t' << "--add-space, -a        Add an extra space character before the delimiter if not already present" << '\n';
 }
 
 int main(int argc, const char **argv) {
@@ -37,7 +37,7 @@ int main(int argc, const char **argv) {
     for (int i = 2; i < argc; i++) {
         string arg = string(argv[i]);
 
-        if (arg == "--add-space") {
+        if (arg == "-a" || arg == "--add-space") {
             args.add_space = true;
         } else {
             cerr << "ERROR: Unknown argument "
