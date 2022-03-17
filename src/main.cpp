@@ -5,16 +5,14 @@
 #include <vector>
 
 void usage(std::ostream& stream, const char *program_invocation_name = "align") {
-    // TODO(#1): `-r` option, to align from last occurrence
-    //  This should be as simple as using rfind instead of find
-
     stream << "USAGE: " << program_invocation_name
            << " <delimiter>"
            << " [option...]"
            << '\n'
 
            << "OPTIONS:\n"
-           << '\t' << "--add-space, -a        Add an extra space character before the delimiter if not already present" << '\n';
+           << '\t' << "--add-space, -a        Add an extra space character before the delimiter if not already present" << '\n'
+           << '\t' << "--find-last, -r        Align from last occurrence of <delimiter>, instead of first" << '\n';
 }
 
 int main(int argc, const char **argv) {
@@ -31,6 +29,7 @@ int main(int argc, const char **argv) {
     // if the C++ gods would be so kind as to zero-initialise this for us :)
     static struct {
         bool add_space;
+        bool find_last;
         bool _invalid;
     } args;
 
@@ -39,6 +38,8 @@ int main(int argc, const char **argv) {
 
         if (arg == "-a" || arg == "--add-space") {
             args.add_space = true;
+        } else if (arg == "-r" || arg == "--find-last") {
+            args.find_last = true;
         } else {
             cerr << "ERROR: Unknown argument "
                  << '`' << arg << '`'
@@ -67,7 +68,9 @@ int main(int argc, const char **argv) {
 
     int64_t max_idx = 0;
     for (string line : lines) {
-        int64_t idx = line.find(delim);
+        int64_t idx = args.find_last
+                        ? line.rfind(delim)
+                        : line. find(delim);
         if (idx >= max_idx) {
             max_idx = idx;
             if (args.add_space && !isspace(line[max_idx - 1])) {
@@ -77,7 +80,9 @@ int main(int argc, const char **argv) {
     }
 
     for (string line : lines) {
-        int64_t delim_idx = line.find(delim);
+        int64_t delim_idx = args.find_last
+                                ? line.rfind(delim)
+                                : line. find(delim);
         if (delim_idx < 0) {
             cout << line << '\n';
             continue;
